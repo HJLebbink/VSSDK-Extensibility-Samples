@@ -8,17 +8,13 @@ namespace LanguageServer
         public static TraceSource CreateTraceSource()
         {
             var traceSource = new TraceSource("MockLanguageExtension", SourceLevels.Verbose | SourceLevels.ActivityTracing);
-
-            var traceFileDirectoryPath = Path.Combine(Path.GetTempPath(), "VisualStudio", "LSP");
+            var traceFileDirectoryPath = Path.Combine(Path.GetTempPath(), "VSLogs", "LSP");
+            Directory.CreateDirectory(traceFileDirectoryPath);
             var logFilePath = Path.Combine(traceFileDirectoryPath, "MockLog.svclog");
             var traceListener = new XmlWriterTraceListener(logFilePath);
-
             traceSource.Listeners.Add(traceListener);
-
             Trace.AutoFlush = true;
-
             return traceSource;
         }
-
     }
 }

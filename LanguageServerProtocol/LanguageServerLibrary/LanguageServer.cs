@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.LanguageServer.Protocol;
-using Microsoft.VisualStudio.Text.Adornments;
 using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
 using System;
@@ -17,7 +16,7 @@ namespace LanguageServer
 {
     public class LanguageServer : INotifyPropertyChanged
     {
-        private int maxProblems = -1;
+        public int maxNumberOfProblems = -1;
         private readonly JsonRpc rpc;
         private readonly HeaderDelimitedMessageHandler messageHandler;
         private readonly LanguageServerTarget target;
@@ -259,9 +258,9 @@ namespace LanguageServer
             parameter.Uri = textDocument.Uri;
             parameter.Diagnostics = diagnostics.ToArray();
 
-            if (this.maxProblems > -1)
+            if (this.maxNumberOfProblems > -1)
             {
-                parameter.Diagnostics = parameter.Diagnostics.Take(this.maxProblems).ToArray();
+                parameter.Diagnostics = parameter.Diagnostics.Take(this.maxNumberOfProblems).ToArray();
             }
 
             _ = this.SendMethodNotificationAsync(Methods.TextDocumentPublishDiagnostics, parameter);
@@ -282,9 +281,9 @@ namespace LanguageServer
             parameter.Uri = uri;
             parameter.Diagnostics = diagnostics.ToArray();
 
-            if (this.maxProblems > -1)
+            if (this.maxNumberOfProblems > -1)
             {
-                parameter.Diagnostics = parameter.Diagnostics.Take(this.maxProblems).ToArray();
+                parameter.Diagnostics = parameter.Diagnostics.Take(this.maxNumberOfProblems).ToArray();
             }
 
             _ = this.SendMethodNotificationAsync(Methods.TextDocumentPublishDiagnostics, parameter);
@@ -806,10 +805,10 @@ namespace LanguageServer
             this.NotifyPropertyChanged(nameof(CurrentSettings));
 
             JToken parsedSettings = JToken.Parse(this.CurrentSettings);
-            int newMaxProblems = parsedSettings.Children().First().Values<int>("maxNumberOfProblems").First();
-            if (this.maxProblems != newMaxProblems)
+            int maxNumberOfProblems = parsedSettings.Children().First().Values<int>("maxNumberOfProblems").First();
+            if (this.maxNumberOfProblems != maxNumberOfProblems)
             {
-                this.maxProblems = newMaxProblems;
+                this.maxNumberOfProblems = maxNumberOfProblems;
                 this.SendDiagnostics();
             }
         }

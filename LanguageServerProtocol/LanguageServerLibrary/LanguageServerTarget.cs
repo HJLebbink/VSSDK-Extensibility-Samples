@@ -112,9 +112,12 @@ namespace LanguageServer
         public Hover OnHover(JToken arg)
         {
             this.traceSource.TraceEvent(TraceEventType.Information, 0, $"Received: {arg}");
+
+            this.server.ShowMessage($"LanguageServerTarget: OnHover: maxProblems={this.server.maxNumberOfProblems}", MessageType.Warning);
+
             var result = new Hover()
             {
-                Contents = new SumType<string, MarkedString>("Mock Hover"),
+                Contents = new SumType<string, MarkedString>($"Mock Hover: maxProblems={this.server.maxNumberOfProblems}"),
                 Range = new Range()
                 {
                     Start = new Position(0, 0),
